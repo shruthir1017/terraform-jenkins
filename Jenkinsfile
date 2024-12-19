@@ -18,25 +18,17 @@ pipeline {
                 git branch: 'main', url: 'https://github.com/shruthir1017/terraform-jenkins.git'
             }
         }
-
         stage('Terraform init') {
             steps {
-                terraformInit()  // Using Terraform plugin's init step
+                sh 'terraform init'
             }
         }
-
         stage('Plan') {
             steps {
-                terraformPlan(
-                    additionalArgs: ['-out=tfplan']  // Optional additional arguments
-                )
-                script {
-                    // Capture plan output for review
-                    sh 'terraform show -no-color tfplan > tfplan.txt'
-                }
+                sh 'terraform plan -out tfplan'
+                sh 'terraform show -no-color tfplan > tfplan.txt'
             }
         }
-
         stage('Apply / Destroy') {
             steps {
                 script {
@@ -47,20 +39,18 @@ pipeline {
                             parameters: [text(name: 'Plan', description: 'Please review the plan', defaultValue: plan)]
                         }
 
-                        terraformApply(
-                            input: false,      // Disable interactive input
-                            plan: 'tfplan'     // Specify the plan to apply
-                        )
+                        sh "terraform apply -input=false tfplan"  // Correct interpolation
                     } else if (params.action == 'destroy') {
-                        terraformDestroy(
-                            autoApprove: true  // Automatically approve destroy action
-                        )
+                        sh "terraform destroy --auto-approve"  // Correct interpolation
                     } else {
                         error "Invalid action selected. Please choose either 'apply' or 'destroy'."
                     }
                 }
             }
         }
+
     }
 }
 
+      
+                  
