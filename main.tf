@@ -89,7 +89,7 @@ resource "aws_instance" "my_ec2_instance" {
   ami                    = "ami-0e2c8caa4b6378d8c"  # Replace with your desired AMI ID
   instance_type          = "t2.micro"      # EC2 instance type (choose according to your needs)
   subnet_id              = aws_subnet.my_public_subnet.id
-  security_group_ids     = [aws_security_group.my_sg.id]
+  vpc_security_group_ids = [aws_security_group.my_sg.id]  # Correct argument here
   associate_public_ip_address = true       # Assign public IP to EC2 instance
   key_name               = "newkey"  # Replace with your SSH key pair name
 
